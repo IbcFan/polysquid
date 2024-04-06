@@ -1,0 +1,25 @@
+manifestVersion: subsquid.io/v0.1
+name: polysquid
+version: 1
+description: A squid that indexes Polymer events
+build:
+deploy:
+  env:
+    DB_URL: ${{ secrets.DB_URL }}
+  processor:
+    - name: op-processor
+      cmd:
+        - sqd
+        - process:prod:op
+      env:
+        RPC_ENDPOINT_OP_SEPOLIA: ${{ secrets.RPC_ENDPOINT_OP_SEPOLIA }}
+    - name: base-processor
+      cmd:
+        - sqd
+        - process:prod:base
+      env:
+        RPC_ENDPOINT_BASE_SEPOLIA: ${{ secrets.RPC_ENDPOINT_BASE_SEPOLIA }}
+  api:
+    cmd:
+      - sqd
+      - serve:prod

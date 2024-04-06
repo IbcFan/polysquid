@@ -1,0 +1,219 @@
+type Acknowledgement @entity {
+  id: ID!
+  dispatcherAddress: String!
+  dispatcherType: String!
+  dispatcherClientName: String!
+  sourcePortAddress: String!
+  sourceChannelId: String!
+  sequence: BigInt!
+  blockNumber: Int!
+  blockTimestamp: BigInt!
+  transactionHash: String!
+  chainId: Int!
+  gas: BigInt!
+  maxFeePerGas: BigInt
+  maxPriorityFeePerGas: BigInt
+  from: String!
+  packet: Packet @derivedFrom(field: "ackPacket")
+}
+
+type CloseIbcChannel @entity {
+  id: ID!
+  dispatcherAddress: String!
+  dispatcherType: String!
+  dispatcherClientName: String!
+  portAddress: String!
+  channelId: String!
+  blockNumber: Int!
+  blockTimestamp: BigInt!
+  transactionHash: String!
+  chainId: Int!
+  gas: BigInt!
+  maxFeePerGas: BigInt
+  maxPriorityFeePerGas: BigInt
+  from: String!
+}
+
+type ConnectIbcChannel @entity {
+  id: ID!
+  dispatcherAddress: String!
+  dispatcherType: String!
+  dispatcherClientName: String!
+  portAddress: String!
+  channelId: String!
+  blockNumber: Int!
+  blockTimestamp: BigInt!
+  transactionHash: String!
+  chainId: Int!
+  gas: BigInt!
+  maxFeePerGas: BigInt
+  maxPriorityFeePerGas: BigInt
+  from: String!
+}
+
+type OpenIbcChannel @entity {
+  id: ID!
+  dispatcherAddress: String!
+  dispatcherType: String!
+  dispatcherClientName: String!
+  portAddress: String!
+  version: String!
+  ordering: Int!
+  feeEnabled: Boolean!
+  connectionHops: [String!]!
+  counterpartyPortId: String!
+  counterpartyChannelId: String!
+  blockNumber: Int!
+  blockTimestamp: BigInt!
+  transactionHash: String!
+  chainId: Int!
+  gas: BigInt!
+  maxFeePerGas: BigInt
+  maxPriorityFeePerGas: BigInt
+  from: String!
+}
+
+type RecvPacket @entity {
+  id: ID!
+  dispatcherAddress: String!
+  dispatcherType: String!
+  dispatcherClientName: String!
+  destPortAddress: String!
+  destChannelId: String!
+  sequence: BigInt!
+  blockNumber: Int!
+  blockTimestamp: BigInt!
+  transactionHash: String!
+  chainId: Int!
+  gas: BigInt!
+  maxFeePerGas: BigInt
+  maxPriorityFeePerGas: BigInt
+  from: String!
+  packet: Packet @derivedFrom(field: "recvPacket")
+}
+
+type SendPacket @entity {
+  id: ID!
+  dispatcherAddress: String!
+  dispatcherType: String!
+  dispatcherClientName: String!
+  sourcePortAddress: String!
+  sourceChannelId: String!
+  packet: String!
+  sequence: BigInt!
+  timeoutTimestamp: BigInt!
+  blockNumber: Int!
+  blockTimestamp: BigInt!
+  transactionHash: String!
+  chainId: Int!
+  gas: BigInt!
+  maxFeePerGas: BigInt
+  maxPriorityFeePerGas: BigInt
+  from: String!
+  packetRelation: Packet @derivedFrom(field: "sendPacket")
+}
+
+type Timeout @entity {
+  id: ID!
+  dispatcherAddress: String!
+  dispatcherType: String!
+  dispatcherClientName: String!
+  sourcePortAddress: String!
+  sourceChannelId: String!
+  sequence: BigInt!
+  blockNumber: Int!
+  blockTimestamp: BigInt!
+  transactionHash: String!
+  chainId: Int!
+  gas: BigInt!
+  maxFeePerGas: BigInt
+  maxPriorityFeePerGas: BigInt
+  from: String!
+}
+
+type WriteAckPacket @entity {
+  id: ID!
+  dispatcherAddress: String!
+  dispatcherType: String!
+  dispatcherClientName: String!
+  writerPortAddress: String!
+  writerChannelId: String!
+  sequence: BigInt!
+  ackPacketSuccess: Boolean!
+  ackPacketData: String!
+  blockNumber: Int!
+  blockTimestamp: BigInt!
+  transactionHash: String!
+  chainId: Int!
+  gas: BigInt!
+  maxFeePerGas: BigInt
+  maxPriorityFeePerGas: BigInt
+  from: String!
+  packet: Packet @derivedFrom(field: "writeAckPacket")
+}
+
+type WriteTimeoutPacket @entity {
+  id: ID!
+  dispatcherAddress: String!
+  dispatcherType: String!
+  dispatcherClientName: String!
+  writerPortAddress: String!
+  writerChannelId: String!
+  sequence: BigInt!
+  timeoutHeightRevisionNumber: BigInt!
+  timeoutHeightRevisionHeight: BigInt!
+  timeoutTimestamp: BigInt!
+  blockNumber: Int!
+  blockTimestamp: BigInt!
+  transactionHash: String!
+  chainId: Int!
+  gas: BigInt!
+  maxFeePerGas: BigInt
+  maxPriorityFeePerGas: BigInt
+  from: String!
+}
+
+enum PacketStates {
+  SENT
+  RECV
+  WRITE_ACK
+  ACK
+  TIMEOUT
+  WRITE_TIMEOUT
+}
+
+type Packet @entity {
+  id: ID!
+  state: PacketStates!
+  sendPacket: SendPacket @unique
+  recvPacket: RecvPacket @unique
+  writeAckPacket: WriteAckPacket @unique
+  ackPacket: Acknowledgement @unique
+}
+
+enum ChannelStates {
+  INIT
+  TRY
+  OPEN
+  CLOSED
+}
+
+type Channel @entity {
+  id: ID!
+  channelId: String!
+  portId: String!
+  counterpartyPortId: String!
+  counterpartyChannelId: String!
+  connectionHops: [String!]!
+  blockNumber: Int!
+  blockTimestamp: BigInt!
+  transactionHash: String!
+  state: ChannelStates!
+}
+
+type Stat @entity {
+  id: ID!
+  name: String!
+  val: Int!
+  chainId: Int!
+}
